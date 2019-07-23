@@ -1,5 +1,5 @@
 # Controle-de-Estoque-V0.4
-> Controle de estoque com armazenamento em servidor PostgreSQL
+> save data in database PostgreSQL
 
 ### Libraries:
 - keyboard
