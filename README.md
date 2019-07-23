@@ -1,2 +1,2 @@
 # Controle-de-Estoque
-Created only for study Python
+> Created only for study Python
