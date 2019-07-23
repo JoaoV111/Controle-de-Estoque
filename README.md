@@ -5,7 +5,7 @@
 - keyboard
 
 ### How to Start: 
-- run main.py
+- Run **main.py**
 
 ### Installers:
 - `pip install keyboard` 
