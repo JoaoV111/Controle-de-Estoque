@@ -1,16 +1,11 @@
-# Controle-de-Estoque
-> Created only for study Python
-
-### Controle-de-Estoque V0.1
-> don't save data
-
-### Controle-de-Estoque V0.2
+# Controle-de-Estoque-V0.2
 > save data in file .txt
 
-### Controle-de-Estoque V0.3
-> save data in file .csv
+### Libraries:
+- keyboard
 
-### Controle-de-Estoque V0.4
-> save data in database PostgreSQL
+### How to Start: 
+- run main.py
 
-
+### Installers:
+- `pip install keyboard` 
