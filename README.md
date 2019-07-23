@@ -7,8 +7,8 @@
 - pandas
 
 ### How to Start: 
-- run setup.py to create a database and a table on postgreSQL.
-- then run main.py
+- run **setup.py** to create a database and a table on postgreSQL.
+- then run **main.py**.
 
 ### Installers:
 - `pip install SQLAlchemy`
