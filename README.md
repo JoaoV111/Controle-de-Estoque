@@ -1,2 +1,11 @@
 # Controle-de-Estoque-V0.1
-Controle de estoque para estudo, sem armazenamento
+> don't save data
+
+### Libraries:
+- keyboard
+
+### How to Start: 
+- run main.py
+
+### Installers:
+- `pip install keyboard` 
