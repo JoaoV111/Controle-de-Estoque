@@ -1,16 +1,16 @@
-# Controle-de-Estoque
-> Created only for study Python
+# Controle-de-Estoque-V0.4
+> Controle de estoque com armazenamento em servidor PostgreSQL
 
-### Controle-de-Estoque V0.1
-> don't save data
+### Libraries:
+- keyboard
+- sqlalchemy
+- pandas
 
-### Controle-de-Estoque V0.2
-> save data in file .txt
+### How to Start: 
+- run setup.py to create a database and a table on postgreSQL.
+- then run main.py
 
-### Controle-de-Estoque V0.3
-> save data in file .csv
-
-### Controle-de-Estoque V0.4
-> save data in database PostgreSQL
-
-
+### Installers:
+- `pip install SQLAlchemy`
+- `pip install pandas` 
+- `pip install keyboard` 
