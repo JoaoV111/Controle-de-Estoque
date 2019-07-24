@@ -1,20 +1,35 @@
 '''Controle de Estoque Configurações'''
-import csv
 import time
 import colors as color
 import sys
 import keyboard
+import sqlalchemy as db
+from sqlalchemy_utils import database_exists, create_database
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.sql import exists
+
 # -------------------------------------------------------------
 # Setup
 DATA = {}
 
-# Definição Produto
-class Product:
-    def __init__(self, name, model, quantity):
-        self.name = name
-        self.model = model
-        self.qt = quantity
+# mapeando db
+Base = declarative_base()
+engine = None
+session = None
 
+# Definição Produto
+class Product(Base):
+        __tablename__ = 'products'
+
+        id = db.Column(db.Integer, db.Sequence('product_id_seq'), primary_key=True)
+        name = db.Column(db.String(255))
+        model = db.Column(db.String(255))
+        quantity = db.Column(db.Integer)
+
+        def __repr__(self):
+                return f"<Product(id={self.id}, name={self.name}, model={self.model},\
+quantity={self.quantity})>"
 
 # -------------------------------------------------------------
 # Apresenta o menu de opções
@@ -28,7 +43,17 @@ def welcome():
     if x == '0':
         _newProduct()
     elif x == '1':
-        _searchProduct()
+        print(f'\n{color.B_green}')
+        print(f'-' * 30)
+        print(f'{"Procurar Produto":^30}')
+        print(f'-' * 30)
+        print(f'{color.close}')
+        prod = _searchProduct()
+        print(prod)
+        if (prod != [] and prod != None):
+                prod_id =  'PD' + '%0*d' % (3, prod[0].id)
+                print(f'\n{"Id: ":<12}{prod_id}\n{"Nome: ":<12}{prod[0].name}\n{"Marca: ":<12}{prod[0].model}'
+                      f'\n{"Quantidade: ":<12}{prod[0].quantity}\n')
     elif x == '2':
         _addProduct()
     elif x == '3':
@@ -59,23 +84,26 @@ def waitCommand():
 # -------------------------------------------------------------
 # Procura o produto no servidor
 def _searchProduct():
-    _readCsv()
-    print(f'\n{color.B_green}')
-    print(f'-' * 30)
-    print(f'{"Procurar Produto":^30}')
-    print(f'-' * 30)
-    print(f'{color.close}')
-    x = input('{}\n Qual é o ID do produto?\n{}'
-              .format(color.B_blue, color.close))
-    x = x[:2].upper() + x[2:]
+    instance = None    
+    input_id = input('{}\n Qual é o ID do produto?\n{}'
+                     .format(color.B_blue, color.close))
     try:
-        y = DATA[x]
-        print('\n\n Id: {}\n Nome: {}\n Marca: {}\n Quantidade: {}'
-              .format(x, y.name, y.model, y.qt))
+            input_id = int(input_id[3:])
+            instance = session.query(Product).filter(Product.id==input_id).all()
+            return instance
     except:
-        print('{}\n ID Inválido!!! Exemplo de ID: PD000\n{}'
-              .format(color.B_red, color.close))
-        _searchProduct()
+            print('{}\n ID Inválido!!! Exemplo de ID: PD000\n{}'
+                  .format(color.B_red, color.close))
+    finally:
+            if instance == []:
+                    print('{}\n Produto não encontrado!\n{}'
+                          .format(color.B_red, color.close))
+            
+            
+    
+
+                    
+
 # -------------------------------------------------------------
 # Registra novo produto
 def _newProduct():
@@ -249,3 +277,13 @@ def _listProduct():
         print (f'{key:^10}|{value.name:^20}|{value.model:^20}|'
                f'{value.qt:^15}')
     print(f'-' * 65)
+
+# -------------------------------------------------------------
+# setup inicial db
+def setup_db():
+        global engine
+        global session
+        engine = db.create_engine('postgresql://postgres:666@localhost/controle_de'
+                                  '_estoque_db')
+        Session = sessionmaker(bind=engine)
+        session = Session()
