@@ -49,9 +49,8 @@ def welcome():
         print(f'-' * 30)
         print(f'{color.close}')
         prod = _searchProduct()
-        print(prod)
-        if (prod != [] and prod != None):
-                prod_id =  'PD' + '%0*d' % (3, prod[0].id)
+        if (prod != [] and prod is not None):
+                prod_id = 'PD' + '%0*d' % (3, prod[0].id)
                 print(f'\n{"Id: ":<12}{prod_id}\n{"Nome: ":<12}{prod[0].name}\n{"Marca: ":<12}{prod[0].model}'
                       f'\n{"Quantidade: ":<12}{prod[0].quantity}\n')
     elif x == '2':
@@ -84,25 +83,26 @@ def waitCommand():
 # -------------------------------------------------------------
 # Procura o produto no servidor
 def _searchProduct():
-    instance = None    
-    input_id = input('{}\n Qual é o ID do produto?\n{}'
-                     .format(color.B_blue, color.close))
-    try:
-            input_id = int(input_id[3:])
-            instance = session.query(Product).filter(Product.id==input_id).all()
-            return instance
-    except:
-            print('{}\n ID Inválido!!! Exemplo de ID: PD000\n{}'
-                  .format(color.B_red, color.close))
-    finally:
-            if instance == []:
+    instance = None
+    while True:
+        input_id = input('{}\n Qual é o ID do produto?\n{}'
+                         .format(color.B_blue, color.close))
+        if (len(input_id) == 5) and (input_id[:2].upper() == 'PD'):
+            try:
+                input_id = int(input_id[2:])
+                instance = session.query(Product).filter(Product.id == input_id).all()
+                return instance
+                break
+            except:
+                print('{}\n ID Inválido!!! Exemplo de ID: PD000\n{}'
+                      .format(color.B_red, color.close))
+            finally:
+                if instance == []:
                     print('{}\n Produto não encontrado!\n{}'
                           .format(color.B_red, color.close))
-            
-            
-    
-
-                    
+        else:
+            print('{}\n ID Inválido!!! Exemplo de ID: PD000\n{}'
+                  .format(color.B_red, color.close))
 
 # -------------------------------------------------------------
 # Registra novo produto
@@ -260,7 +260,7 @@ def _removeProduct():
     print ('{0}\n Produto removido com sucesso!\n Quantidade de {2} da {3} no '
            'estoque: {4}{1}'.format(color.B_green, color.close, DATA[Id].name,
                                     DATA[Id].model, DATA[Id].qt))
-    
+
 # -------------------------------------------------------------
 # Lista todos os produtos
 def _listProduct():
