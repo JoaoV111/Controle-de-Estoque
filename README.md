@@ -7,7 +7,7 @@
 - pandas
 
 ### How to Start: 
-- Configure file **config.txt** at this format "dialect+driver://username:password@host:port/database"
+- Configure file **config.txt** at this format `dialect+driver://username:password@host:port/database`
 - Run **setup.py** to create a database and a table on postgreSQL.
 - Run **main.py**.
 - Enjoy
