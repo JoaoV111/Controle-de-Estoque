@@ -41,6 +41,11 @@ def welcome():
        3. Remover Produto\n   \
        4. Listar Produtos\n{1}'.format(color.B_blue, color.close, color.blue))
     if x == '0':
+        print(f'\n{color.B_green}')
+        print(f'-' * 30)
+        print(f'{"Novo Produto":^30}')
+        print(f'-' * 30)
+        print(f'{color.close}')
         _newProduct()
     elif x == '1':
         print(f'\n{color.B_green}')
@@ -75,7 +80,7 @@ def waitCommand():
                 break
             if keyboard.is_pressed('Esc'):
                 print("{}\n Saindo...\n{}".format(color.B_red, color.close))
-                time.sleep(2)
+                time.sleep(1)
                 sys.exit(0)
         except:
             break
@@ -107,30 +112,19 @@ def _searchProduct():
 # -------------------------------------------------------------
 # Registra novo produto
 def _newProduct():
-    _readCsv()
-    print(f'\n{color.B_green}')
-    print(f'-' * 30)
-    print(f'{"Novo Produto":^30}')
-    print(f'-' * 30)
-    print(f'{color.close}')
     name = input('{}\n Digite o nome do produto:\n{}'
                  .format(color.B_blue, color.close)).capitalize()
     model = input('{}\n Digite a marca do produto:\n{}'
                   .format(color.B_blue, color.close)).capitalize()
+    instance = session.query(Product).filter(Product.name == name)\
+                      .filter(Product.model == model).all()
+    if instance != []:
+        print('{}\n Produto já registrado!!!\n{}'
+              .format(color.B_red, color.close))
 
-    # verificar se produto já esta registrado
-    stat = True
-    for i in DATA.values():
-        if (i.name == name) and (i.model == model):
-            print('{}\n Produto já registrado!!!\n{}'
-                  .format(color.B_red, color.close))
-            stat = False
-
-    if stat:
+    else:
         quantity = input('{}\n Digite a quantidade do produto registrado:\n{}'
                          .format(color.B_blue, color.close))
-
-        # verificar se quantity é numero int
         while not(isinstance(quantity, int)):
             try:
                 quantity = int(quantity)
@@ -140,21 +134,18 @@ def _newProduct():
                 quantity = input('{}\n Digite a quantidade do produto '
                                  'registrado novamente:\n{}'
                                  .format(color.B_blue, color.close))
+        try:
+            prod = Product(name=name, model=model, quantity=quantity)
+            session.add(prod)
+            instance = session.query(Product).filter(Product.name == name)\
+                              .filter(Product.model == model).all()
+            prod_id = 'PD' + '%0*d' % (3, instance[0].id)
+            print ('{0}\n Produto registrado com sucesso!\n ID do produto = {2}{1}'
+                   .format(color.B_green, color.close, prod_id))
+        except:
+            print('{}\n Ocorreu um erro ao registrar o produto.\n{}'
+                  .format(color.B_red, color.close))
 
-        # Calcular proximo ID
-        x = 0
-        for i in DATA.keys():
-            if int(i[3:]) > x:
-                x = int(i[3:])
-
-        x += 1
-        newID = 'PD' + '%0*d' % (3, x)
-        vars()[newID] = Product(name, model, quantity)
-        DATA[newID] = vars()[newID]
-        _writeCsv()
-        print ('{0}\n Produto registrado com sucesso!\n ID do produto = {2}{1}'
-               .format(color.B_green, color.close, newID))
-    
 #  -------------------------------------------------------------
 # Adiciona Produto
 def _addProduct():
