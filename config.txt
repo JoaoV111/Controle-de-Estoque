@@ -1,0 +1,1 @@
+postgresql://postgres:666@localhost/controle_de_estoque_db
