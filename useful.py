@@ -1,7 +1,6 @@
 '''Controle de Estoque Configurações'''
 import time
 import colors as color
-import keyboard
 import sqlalchemy as db
 from sqlalchemy_utils import database_exists, create_database
 from sqlalchemy.ext.declarative import declarative_base
@@ -25,8 +24,8 @@ class Product(Base):
         quantity = db.Column(db.Integer)
 
         def __repr__(self):
-                return (f"<Product(id={self.id}, name={self.name}, model={self.model},"
-                        f" quantity={self.quantity})>")
+                return "<Product(id='%d', name='%s', model='%s', quantity='%d')>" % (
+                       self.id, self.name, self.model, self.quantity)
 
 # -------------------------------------------------------------
 # Apresenta o menu de opções
@@ -38,7 +37,7 @@ def welcome():
        3. Remover Produto de Estoque\n   \
        4. Listar Produtos\n   \
        5. Deletar Registro de Produto\n{1}'
-       .format(color.B_blue, color.close, color.blue))
+              .format(color.B_blue, color.close, color.blue))
     if x == '0':
         print(f'\n{color.B_green}')
         print(f'-' * 65)
@@ -89,18 +88,13 @@ def welcome():
 # -------------------------------------------------------------
 # voltar ao menu, ou sair do programa
 def waitCommand():
-    print('{}\n\n\n Aperte Enter para continuar, ou ESC para sair...\n\n{}\n'
-          .format(color.B_green, color.close))
-    while True:
-        try:
-            if keyboard.is_pressed('ENTER'):
-                break
-            if keyboard.is_pressed('ESC'):
-                print("{}\n Saindo...\n{}".format(color.B_red, color.close))
-                time.sleep(1)
-                exit(0)
-        except:
-            break
+    command = input('{}\n\n\n Aperte Enter para continuar, ou escreva "Exit"'
+                    ' para sair...\n\n{}\n'
+                    .format(color.B_green, color.close))
+    if command.capitalize() == 'Exit':
+            print("{}\n Saindo...\n{}".format(color.B_red, color.close))
+            time.sleep(1)
+            exit(0)
 
 # -------------------------------------------------------------
 # Procura o produto no servidor
@@ -167,40 +161,40 @@ def _newProduct():
 # -------------------------------------------------------------
 # Deletar registro de produto
 def _delProduct():
-        prod = _searchProduct()
-        if (prod != [] and prod is not None):
-            prod_id = 'PD' + '%0*d' % (3, prod[0].id)
-            print(f'\n{"Id: ":<12}{prod_id}\n{"Nome: ":<12}{prod[0].name}\n'
-                  f'{"Marca: ":<12}{prod[0].model}\n{"Quantidade: ":<12}'
-                  f'{prod[0].quantity}\n')
-            while True:
-                comand = input(f'{color.B_red}\nDeseja deletar o produto? [S/N]'
-                      f'\n{color.close}')
-                if comand.upper() == 'S':
-                        try:
-                                session.delete(prod[0])
-                                session.commit()
-                                print ('{0}\n Produto deletado com sucesso!\n ID do'
-                                       ' produto = {2}{1}'
-                                       .format(color.B_green, color.close, prod_id))
-                                break
-                        except:
-                                print('{}\n Ocorreu um erro ao deletar produto.\n{}'
-                                      .format(color.B_red, color.close))
-                                break
-                if comand.upper() == 'N':
+    prod = _searchProduct()
+    if (prod != [] and prod is not None):
+        prod_id = 'PD' + '%0*d' % (3, prod[0].id)
+        print(f'\n{"Id: ":<12}{prod_id}\n{"Nome: ":<12}{prod[0].name}\n'
+              f'{"Marca: ":<12}{prod[0].model}\n{"Quantidade: ":<12}'
+              f'{prod[0].quantity}\n')
+        while True:
+            comand = input(f'{color.B_red}\nDeseja deletar o produto? [S/N]'
+                           f'\n{color.close}')
+            if comand.upper() == 'S':
+                try:
+                    session.delete(prod[0])
+                    session.commit()
+                    print ('{0}\n Produto deletado com sucesso!\n ID do'
+                           ' produto = {2}{1}'
+                           .format(color.B_green, color.close, prod_id))
+                    break
+                except:
+                        print('{}\n Ocorreu um erro ao deletar produto.\n{}'
+                              .format(color.B_red, color.close))
                         break
-                
+            if comand.upper() == 'N':
+                    break
+
 #  -------------------------------------------------------------
 # Adiciona quantidade de Produto
 def _addProduct():
     prod = _searchProduct()
-    if (prod != []) and (prod != None):
+    if (prod != []) and (prod is not(None)):
         add_quantity = input('{3}\n Existem {2} unidades de {0} da {1}.\n '
-                              'Deseja adicionar quantas unidades?\n{4}'
-                              .format(prod[0].name, prod[0].model,
-                                      prod[0].quantity, color.B_blue,
-                                      color.close))
+                             'Deseja adicionar quantas unidades?\n{4}'
+                             .format(prod[0].name, prod[0].model,
+                                     prod[0].quantity, color.B_blue,
+                                     color.close))
 
         # Verifica se add_quantity_é inteiro
         while not(isinstance(add_quantity, int)):
@@ -229,43 +223,42 @@ def _addProduct():
 # Remove quantidade de Produto
 def _removeProduct():
     prod = _searchProduct()
-    if (prod != []) and (prod != None):
+    if (prod != []) and (prod is not(None)):
         rm_quantity = input('{3}\n Existem {2} unidades de {0} da {1}.\n '
-                              'Deseja remover quantas unidades?\n{4}'
-                              .format(prod[0].name, prod[0].model,
-                                      prod[0].quantity, color.B_blue,
-                                      color.close))
+                            'Deseja remover quantas unidades?\n{4}'
+                            .format(prod[0].name, prod[0].model,
+                                    prod[0].quantity, color.B_blue,
+                                    color.close))
 
-        # Verifica se add_quantity_é inteiro e se existe numero em estoque
-        while True:
-            while not(isinstance(rm_quantity, int)):
-                try:
-                    rm_quantity = int(rm_quantity)
-                except:
-                    print('{}\n Número Inválido!!!\n{}'
-                          .format(color.B_red, color.close))
-                    rm_quantity = input('{2}\n Deseja remover quantas unidades de '
-                                        '{0} da {1} ?\n{3}'.format(prod[0].name,
-                                                                   prod[0].model,
-                                                                   color.B_blue,
-                                                                   color.close))
-            if (rm_quantity <= prod[0].quantity):
-                break
-            else:
-                print('{0}\n Não há unidades suficientes no estoque!!!\n'
-                      ' Existem {2} unidades no estoque.{1}'
-                      .format(color.B_red, color.close, prod[0].quantity))
-                rm_quantity = input('{2}\n Deseja remover quantas unidades de {0} da '
-                                    '{1} ?\n{3}'.format(prod[0].name, prod[0].model,
-                                                        color.B_blue, color.close))
-                
+    # Verifica se add_quantity_é inteiro e se existe numero em estoque
+    while True:
+        while not(isinstance(rm_quantity, int)):
+            try:
+                rm_quantity = int(rm_quantity)
+            except:
+                print('{}\n Número Inválido!!!\n{}'
+                      .format(color.B_red, color.close))
+                rm_quantity = input('{2}\n Deseja remover quantas unidades de '
+                                    '{0} da {1} ?\n{3}'.format(prod[0].name,
+                                                               prod[0].model,
+                                                               color.B_blue,
+                                                               color.close))
+        if (rm_quantity <= prod[0].quantity):
+            break
+        else:
+            print('{0}\n Não há unidades suficientes no estoque!!!\n'
+                  ' Existem {2} unidades no estoque.{1}'
+                  .format(color.B_red, color.close, prod[0].quantity))
+            rm_quantity = input('{2}\n Deseja remover quantas unidades de {0} da '
+                                '{1} ?\n{3}'.format(prod[0].name, prod[0].model,
+                                                    color.B_blue, color.close))
     try:
         prod[0].quantity = prod[0].quantity - rm_quantity
         session.commit()
         print ('{0}\n Produto removido de estoque com sucesso!\n Quantidade de {2}'
                ' da {3} no estoque: {4}{1}'.format(color.B_green, color.close,
-                                                  prod[0].name, prod[0].model,
-                                                  prod[0].quantity))
+                                                   prod[0].name, prod[0].model,
+                                                   prod[0].quantity))
     except:
         print('{}\n Ocorreu um erro ao registrar dados.\n{}'
               .format(color.B_red, color.close))
@@ -280,7 +273,7 @@ def _listProduct():
     print(f'{color.close}\n')
     print(f'-' * 65)
     print(f'{"ID":^10}|{"Nome":^20}|{"Marca":^20}|{"Qnt":^15}')
-    print(f'-' * 65 )
+    print(f'-' * 65)
     for instance in session.query(Product).order_by(Product.id):
         prod_id = 'PD' + '%0*d' % (3, instance.id)
         print (f'{prod_id:^10}|{instance.name:^20}|{instance.model:^20}|'
@@ -290,18 +283,18 @@ def _listProduct():
 # -------------------------------------------------------------
 # setup inicial db
 def setup_db():
-        _readConfigTxt()
-        global engine
-        global session
-        engine = db.create_engine(adress_db)
-        Session = sessionmaker(bind=engine)
-        session = Session()
+    readConfigTxt()
+    global engine
+    global session
+    engine = db.create_engine(adress_db)
+    Session = sessionmaker(bind=engine)
+    session = Session()
 
 # -------------------------------------------------------------
 # Ler config.txt
-def _readConfigTxt():
+def readConfigTxt():
     config_list = []
-    configTxt = open("config.txt","r")
+    configTxt = open("config.txt", "r")
     for row in configTxt:
         config_list.append(row)
     configTxt.close()

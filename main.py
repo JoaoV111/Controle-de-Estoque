@@ -14,15 +14,3 @@ print('\n\n\033[m')
 while True:
     usf.welcome()
     usf.waitCommand()
-
-
-
-      
-
-     
-
-
-
-
-
-
