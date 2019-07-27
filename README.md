@@ -1,10 +1,12 @@
 # Controle-de-Estoque-V0.4
 > save data in database PostgreSQL
 
+### Requirements:
+- [PostgreSQL](https://www.postgresql.org/download/).
+
 ### Libraries:
-- keyboard
-- sqlalchemy
-- pandas
+- SQLAlchemy == 1.3.5
+- SQLAlchemy-Utils == 0.34.1
 
 ### How to Start: 
 - Configure file **config.txt** at this format `dialect+driver://username:password@host:port/database`;
@@ -14,6 +16,5 @@
 - Enjoy!
 
 ### Installers:
-- `pip install SQLAlchemy`
-- `pip install pandas` 
-- `pip install keyboard` 
+- `pip install SQLAlchemy 
+- `pip install SQLAlchemy-Utils
