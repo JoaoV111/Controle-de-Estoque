@@ -16,5 +16,5 @@
 - Enjoy!
 
 ### Installers:
-- `pip install SQLAlchemy 
-- `pip install SQLAlchemy-Utils
+- `pip install SQLAlchemy`
+- `pip install SQLAlchemy-Utils`
