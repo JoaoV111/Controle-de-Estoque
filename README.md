@@ -2,8 +2,8 @@
 > save data in database PostgreSQL
 
 ### Requirements:
-- [Python 3.7.4](https://www.python.org/).
-- [PostgreSQL](https://www.postgresql.org/download/).
+- [Python 3.7.4](https://www.python.org/)
+- [PostgreSQL](https://www.postgresql.org/download/)
 
 ### Libraries:
 - SQLAlchemy == 1.3.5
