@@ -8,6 +8,7 @@
 ### Libraries:
 - SQLAlchemy == 1.3.5
 - SQLAlchemy-Utils == 0.34.1
+- pytest==5.0.1
 
 ### How to Start: 
 - Configure file **config.txt** at this format `dialect+driver://username:password@host:port/database`;
@@ -19,5 +20,6 @@
 ### Installers:
 - `pip install SQLAlchemy`
 - `pip install SQLAlchemy-Utils`
+- `pip install pytest`
 
 
